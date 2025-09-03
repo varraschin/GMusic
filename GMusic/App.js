@@ -22,7 +22,7 @@ export default function App() {
 
         <View>
           <Slider 
-            style={styles.progessBar}
+            style={styles.progressBar}
             value={10}
             minimumValue={0}
             maximumValue={100}
@@ -32,10 +32,21 @@ export default function App() {
             onSlidingComplete={() => {}}
           />
           <View style={styles.progressLevelDuration}>
-            <Text style={styles.progessLabelText}>00:00</Text>
-            <Text style={styles.progessLabelText}>00:00</Text>
+            <Text style={styles.progressLabelText}>00:00</Text>
+            <Text style={styles.progressLabelText}>00:00</Text>
 
           </View>
+        </View>
+        <View style={styles.musicControlsContainer}>
+          <TouchableOpacity>
+            <Ionicons name='play-skip-back-outline' size={35} color='#FFD369' />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name='pause-circle' size={75} color='#FFD369' />
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Ionicons name='play-skip-forward-outline' size={35} color='#FFD369' />
+          </TouchableOpacity>
         </View>
 
       </View>
@@ -117,5 +128,26 @@ const styles = StyleSheet.create({
   songArtist: {
     fontSize: 16,
     fontWeight: '300',
+  },
+  progressBar: {
+    width: 340,
+    height: 40,
+    marginTop: 20,
+  },
+  progressLevelDuration: {
+    width: 340,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  progressLabelText: {
+    color: '#fff',
+    fontWeight: '500'
+  },
+  musicControlsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent:'space-between',
+    width: '60%',
+    marginTop: 10
   }
 });
