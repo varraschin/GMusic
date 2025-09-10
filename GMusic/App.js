@@ -1,18 +1,57 @@
-import React from 'react';
+import React, { useEffect, useRef, } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, FlatList, Image, NativeEventEmitter, Animated, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Slider from '@react-native-community/slider';
+import songs from './model/data';
 
 const { width, height } = Dimensions.get('window');
 
 export default function App() {
+
+  const scrollX = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    scrollX.addListener(({value}) => {
+      console.log(`ScrollX: ${value}`);
+      const index = Math.round(value / width);
+      console.log(index);
+    });
+  }, []);
+
+  const renderSongs = ({ item, index }) => {
+    return (
+      <View style={styles.mainImageWrapper}>
+        <View style={[styles.imageWrapper, styles.elevation]}>
+          <Image source={item.artwork} style={styles.musicImage} />
+        </View>
+      </View>
+    )
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.main}>
-        <View style={[styles.imageWrapper, styles.elevation]}>
-          <Image source={require('./assets/img/gallo.png')} style={styles.musicImage} />
-        </View>
+        <Animated.FlatList
+          data={songs}
+          renderItem={renderSongs}
+          keyExtractor={item =>  item.id}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={Animated.event(
+            [
+              {
+                nativeEvent: {
+                  contentOffset: { x : scrollX }
+                }
+              }
+            ],
+            { useNativeDriver: true }
+          )}
+        />
+
         <View>
           <Text style={[styles.songContent, styles.songTitle]}>Nome da Música</Text>
         </View>
@@ -21,7 +60,7 @@ export default function App() {
         </View>
 
         <View>
-          <Slider 
+          <Slider
             style={styles.progressBar}
             value={10}
             minimumValue={0}
@@ -29,7 +68,7 @@ export default function App() {
             thumbTintColor='#FFD369'
             minimumTrackTintColor='#FFD369'
             maximumTrackTintColor='#FFF'
-            onSlidingComplete={() => {}}
+            onSlidingComplete={() => { }}
           />
           <View style={styles.progressLevelDuration}>
             <Text style={styles.progressLabelText}>00:00</Text>
@@ -59,7 +98,7 @@ export default function App() {
           <TouchableOpacity>
             <Ionicons name='repeat' size={30} color={'#888888'} />
           </TouchableOpacity>
-        
+
           <TouchableOpacity>
             <Ionicons name='share-outline' size={30} color={'#888888'} />
           </TouchableOpacity>
@@ -67,7 +106,7 @@ export default function App() {
           <TouchableOpacity>
             <Ionicons name='ellipsis-horizontal' size={30} color={'#888888'} />
           </TouchableOpacity>
-          
+
         </View>
       </View>
       <StatusBar style="light" />
@@ -85,6 +124,12 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  mainImageWrapper: {
+    width: width,
+    justifyContent: 'center',
+    alignItems: 'center',
+
   },
   footer: {
     width: width,
@@ -146,7 +191,7 @@ const styles = StyleSheet.create({
   musicControlsContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
     width: '60%',
     marginTop: 10
   }
